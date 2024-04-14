@@ -7,3 +7,10 @@ html, body, [class*="css"], * {
     text-align: right;
     direction: rtl;
 }
+
+[class*="plotly"] *,
+[class*="stDataFrame"] *,
+[class*="stSlider"] * {
+    direction: ltr !important;
+    text-align: center !important;
+}
