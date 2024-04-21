@@ -562,6 +562,8 @@ st.write("""
 map(city_data.merge(coordinates, on="city", how="left")[["lat", "lon", "net", "tourist"]], mazandaran[0], mazandaran[1], zoom_level)
 # Get absolute path of script.py
 script_path = os.path.abspath(__file__)
+# Remove script.py from the path
+script_path = os.path.dirname(script_path)
 # If folder graph-data does not exist, create it
 if not os.path.exists(os.path.join(os.path.dirname(script_path), 'graph-data')):
     os.makedirs(os.path.join(os.path.dirname(script_path), 'graph-data'))
