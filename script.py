@@ -289,7 +289,7 @@ def graph_formation(start_date, end_date):
     classes = [1, 2]
 
     for province in provinces:
-        files = os.listdir(f'https://github.com/amirsoleix/traffic-counter-app/tree/master/graph-data/{province}')
+        files = os.listdir(f'{script_path}/graph-data/{province}')
         for file in files:
             name = re.sub(r'.csv', '', file)
 
@@ -314,7 +314,7 @@ def graph_formation(start_date, end_date):
             else:
                 print(f"Ending node {ending_node} not found in city_translation.")
 
-            df = pd.read_csv(f'https://github.com/amirsoleix/traffic-counter-app/tree/master/graph-data/{province}/{file}')
+            df = pd.read_csv(f'{script_path}/graph-data/{province}/{file}')
 
             df['Start Date'] = df['Start Time'].apply(lambda x: JalaliDate(
             int(x.split(' ')[0].split('/')[0]),
@@ -560,9 +560,14 @@ st.write("""
 نقشه تعداد توریست‌های هر شهر که با ارتفاع ستون‌های آن نمایش داده شده است. شهر‌های با توریست زیاد به رنگ سبز پررنگ درآمده‌اند و شهرهایی که کمترین توریست را داشته‌اند قرمز شده‌اند.
 """)
 map(city_data.merge(coordinates, on="city", how="left")[["lat", "lon", "net", "tourist"]], mazandaran[0], mazandaran[1], zoom_level)
+# Get absolute path of script.py
+script_path = os.path.abspath(__file__)
 # If folder graph-data does not exist, create it
-if not os.path.exists('./graph-data'):
-    os.system("unzip ./data/graph-data.zip")
+if not os.path.exists(os.path.join(os.path.dirname(script_path), 'graph-data')):
+    os.makedirs(os.path.join(os.path.dirname(script_path), 'graph-data'))
+    # Unzip the graph-data.zip file
+    with zipfile.ZipFile("graph-data.zip", 'r') as zip_ref:
+        zip_ref.extractall(os.path.join(os.path.dirname(script_path), 'graph-data'))
 st.write("""
 گراف محورهای تردد که با افزایش ابعاد می‌توانید میزان تردد در هر یک را مشاهده کنید.
 """)
