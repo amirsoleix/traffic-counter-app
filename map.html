@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 700px;
+                 height: 700px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 700px;
+                 height: 700px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "red", "id": "Siahkal", "label": "Siahkal(-168521)", "shape": "dot", "size": 26.13339898866714}, {"color": "green", "id": "Sangar", "label": "Sangar(110678)", "shape": "dot", "size": 25.220502701671336}, {"color": "green", "id": "Deylaman", "label": "Deylaman(1075)", "shape": "dot", "size": 15.177148690922742}, {"color": "green", "id": "Lahijan", "label": "Lahijan(79033)", "shape": "dot", "size": 24.489317075580082}, {"color": "red", "id": "Rasht", "label": "Rasht(-440349)", "shape": "dot", "size": 28.219034384120537}, {"color": "green", "id": "Kuchesfahan", "label": "Kuchesfahan(195298)", "shape": "dot", "size": 26.45360016382017}, {"color": "green", "id": "Ziabar", "label": "Ziabar(52814)", "shape": "dot", "size": 23.614156421324772}, {"color": "red", "id": "Punel", "label": "Punel(-29577)", "shape": "dot", "size": 22.355504658601916}, {"color": "green", "id": "Pirbazar", "label": "Pirbazar(16486)", "shape": "dot", "size": 21.086893239697208}, {"color": "green", "id": "Fuman", "label": "Fuman(631696)", "shape": "dot", "size": 29.002575009408652}, {"color": "red", "id": "Khalkhal", "label": "Khalkhal(-3166)", "shape": "dot", "size": 17.509402468775292}, {"color": "red", "id": "Asalem", "label": "Asalem(-4953)", "shape": "dot", "size": 18.478721375986616}, {"color": "red", "id": "Anzali", "label": "Anzali(-3488)", "shape": "dot", "size": 17.71909902571329}, {"color": "green", "id": "Rezvanshahr", "label": "Rezvanshahr(13181)", "shape": "dot", "size": 20.60138860169684}, {"color": "green", "id": "Hasanrud", "label": "Hasanrud(198732)", "shape": "dot", "size": 26.49144827970465}, {"color": "green", "id": "Khomam", "label": "Khomam(7256)", "shape": "dot", "size": 19.30647696763348}, {"color": "green", "id": "Imamzadeh Hashem", "label": "Imamzadeh Hashem(16696)", "shape": "dot", "size": 21.114362385349196}, {"color": "red", "id": "Saravan", "label": "Saravan(-139829)", "shape": "dot", "size": 25.728141548132317}, {"color": "blue", "id": "Shaqaji", "label": "Shaqaji(0)", "shape": "dot", "size": 5}, {"color": "red", "id": "Rostamabad", "label": "Rostamabad(-54828)", "shape": "dot", "size": 23.69540803613052}, {"color": "green", "id": "Rudbar", "label": "Rudbar(85470)", "shape": "dot", "size": 24.65932256746016}, {"color": "red", "id": "Manjil", "label": "Manjil(-139879)", "shape": "dot", "size": 25.728917828101665}, {"color": "red", "id": "Astaneh", "label": "Astaneh(-252780)", "shape": "dot", "size": 27.01379944950114}, {"color": "red", "id": "Lakan", "label": "Lakan(-9484)", "shape": "dot", "size": 19.887246136911706}, {"color": "blue", "id": "Jirdeh", "label": "Jirdeh(0)", "shape": "dot", "size": 5}, {"color": "red", "id": "Kiashahr", "label": "Kiashahr(-201367)", "shape": "dot", "size": 26.520049333483996}, {"color": "green", "id": "Bazar Jomeh", "label": "Bazar Jomeh(7143)", "shape": "dot", "size": 19.27244112522215}, {"color": "green", "id": "Masouleh", "label": "Masouleh(1730)", "shape": "dot", "size": 16.202746241413}, {"color": "blue", "id": "Someh Sara", "label": "Someh Sara(0)", "shape": "dot", "size": 5}, {"color": "green", "id": "Talesh", "label": "Talesh(10550)", "shape": "dot", "size": 20.118319590988968}, {"color": "red", "id": "Astara", "label": "Astara(-31874)", "shape": "dot", "size": 22.517864002289514}, {"color": "green", "id": "Aq Chay", "label": "Aq Chay(21324)", "shape": "dot", "size": 21.645361453773653}, {"color": "green", "id": "Chaboksar", "label": "Chaboksar(74773)", "shape": "dot", "size": 24.369014416775684}, {"color": "green", "id": "Kalachay", "label": "Kalachay(13756)", "shape": "dot", "size": 20.694038826088573}, {"color": "green", "id": "Ramsar", "label": "Ramsar(292649)", "shape": "dot", "size": 27.33180942151353}, {"color": "red", "id": "Rudsar", "label": "Rudsar(-60612)", "shape": "dot", "size": 23.913151301088046}, {"color": "green", "id": "Amlash", "label": "Amlash(20202)", "shape": "dot", "size": 21.528046447830963}, {"color": "green", "id": "Kalan Kalaye", "label": "Kalan Kalaye(19)", "shape": "dot", "size": 7.31198998949478}, {"color": "green", "id": "Langarud", "label": "Langarud(50446)", "shape": "dot", "size": 23.514564089926317}, {"color": "green", "id": "Lowshan", "label": "Lowshan(661283)", "shape": "dot", "size": 29.10196962790473}, {"color": "red", "id": "Ghazvin", "label": "Ghazvin(-1343084)", "shape": "dot", "size": 30.640532044924697}, {"color": "green", "id": "Gilan Border", "label": "Gilan Border(680452)", "shape": "dot", "size": 29.164019386483623}, {"color": "red", "id": "Gilvan", "label": "Gilvan(-250)", "shape": "dot", "size": 12.07486673985409}, {"color": "red", "id": "Tonekabon", "label": "Tonekabon(-349095)", "shape": "dot", "size": 27.714780344856614}, {"color": "red", "id": "Kordkuy", "label": "Kordkuy(-28924)", "shape": "dot", "size": 22.30704238563422}, {"color": "green", "id": "Bandar Torkaman", "label": "Bandar Torkaman(109158)", "shape": "dot", "size": 25.190476769679155}, {"color": "green", "id": "Gorgan", "label": "Gorgan(191682)", "shape": "dot", "size": 26.413019942889196}, {"color": "red", "id": "Galugah", "label": "Galugah(-34425)", "shape": "dot", "size": 22.685000436606693}, {"color": "red", "id": "Se-rah-e Yasaqi", "label": "Se-rah-e Yasaqi(-12120)", "shape": "dot", "size": 20.419304004332865}, {"color": "red", "id": "Aq Qala", "label": "Aq Qala(-22810)", "shape": "dot", "size": 21.791578200410978}, {"color": "red", "id": "Gomishan", "label": "Gomishan(-72573)", "shape": "dot", "size": 24.304174572458535}, {"color": "green", "id": "Gonbad", "label": "Gonbad(46782)", "shape": "dot", "size": 23.350858041776327}, {"color": "red", "id": "Minudasht", "label": "Minudasht(-77598)", "shape": "dot", "size": 24.4495324578874}, {"color": "green", "id": "Azadshahr", "label": "Azadshahr(35793)", "shape": "dot", "size": 22.769597092557174}, {"color": "red", "id": "Incheh Borun", "label": "Incheh Borun(-536)", "shape": "dot", "size": 13.685963213523687}, {"color": "green", "id": "Se-rah-e Kalaleh", "label": "Se-rah-e Kalaleh(4998)", "shape": "dot", "size": 18.498321601011867}, {"color": "red", "id": "Galikesh", "label": "Galikesh(-6758)", "shape": "dot", "size": 19.152301750154837}, {"color": "green", "id": "Khosh Yeylagh", "label": "Khosh Yeylagh(35678)", "shape": "dot", "size": 22.762611051167802}, {"color": "red", "id": "Aliabad", "label": "Aliabad(-146135)", "shape": "dot", "size": 25.82391980802749}, {"color": "red", "id": "Shahroud", "label": "Shahroud(-38165)", "shape": "dot", "size": 22.908895228642294}, {"color": "green", "id": "Tangrah", "label": "Tangrah(6925)", "shape": "dot", "size": 19.205232327046517}, {"color": "red", "id": "Kalaleh", "label": "Kalaleh(-63189)", "shape": "dot", "size": 24.00355103239944}, {"color": "red", "id": "Golestan Forest", "label": "Golestan Forest(-22219)", "shape": "dot", "size": 21.734599629228107}, {"color": "green", "id": "Behshahr", "label": "Behshahr(36915)", "shape": "dot", "size": 22.836602519919936}, {"color": "red", "id": "Marzpol", "label": "Marzpol(-12)", "shape": "dot", "size": 6.712113404111031}, {"color": "green", "id": "Maraveh Tappeh", "label": "Maraveh Tappeh(63189)", "shape": "dot", "size": 24.00355103239944}, {"color": "red", "id": "Kiyakala", "label": "Kiyakala(-116249)", "shape": "dot", "size": 25.32713291529565}, {"color": "green", "id": "Babol", "label": "Babol(869538)", "shape": "dot", "size": 29.696467802652577}, {"color": "red", "id": "Gatab", "label": "Gatab(-931)", "shape": "dot", "size": 14.867948117136285}, {"color": "red", "id": "Amol", "label": "Amol(-492868)", "shape": "dot", "size": 28.463697167545433}, {"color": "green", "id": "Qaemshahr", "label": "Qaemshahr(73201)", "shape": "dot", "size": 24.322881694936175}, {"color": "green", "id": "Fereydunkenar", "label": "Fereydunkenar(214347)", "shape": "dot", "size": 26.655688351566702}, {"color": "red", "id": "Babolsar", "label": "Babolsar(-776765)", "shape": "dot", "size": 29.451476198192044}, {"color": "red", "id": "Shahzeyd", "label": "Shahzeyd(-39572)", "shape": "dot", "size": 22.98748867232048}, {"color": "red", "id": "Se-rah-e Sangchal", "label": "Se-rah-e Sangchal(-22299)", "shape": "dot", "size": 21.742400517439947}, {"color": "green", "id": "Se-rah-e Baladeh", "label": "Se-rah-e Baladeh(33045)", "shape": "dot", "size": 22.596185807484915}, {"color": "green", "id": "Park Jangali", "label": "Park Jangali(49750)", "shape": "dot", "size": 23.48440185841381}, {"color": "red", "id": "Kiasar", "label": "Kiasar(-5227)", "shape": "dot", "size": 18.59541286950743}, {"color": "red", "id": "Sari", "label": "Sari(-124514)", "shape": "dot", "size": 25.476265313908243}, {"color": "green", "id": "Garmab", "label": "Garmab(5987)", "shape": "dot", "size": 18.889670244188896}, {"color": "red", "id": "Semnan", "label": "Semnan(-13294)", "shape": "dot", "size": 20.61991118105731}, {"color": "red", "id": "Juybar", "label": "Juybar(-9764)", "shape": "dot", "size": 19.950361673460765}, {"color": "green", "id": "Neka", "label": "Neka(2231)", "shape": "dot", "size": 16.752209282675306}, {"color": "green", "id": "Khazarabad", "label": "Khazarabad(40972)", "shape": "dot", "size": 23.06296574491947}, {"color": "red", "id": "Shakta", "label": "Shakta(-42016)", "shape": "dot", "size": 23.117590280910292}, {"color": "green", "id": "Behnamir", "label": "Behnamir(24191)", "shape": "dot", "size": 21.919166558313133}, {"color": "blue", "id": "Amirabad Port", "label": "Amirabad Port(0)", "shape": "dot", "size": 5}, {"color": "blue", "id": "Zagheh Marz", "label": "Zagheh Marz(0)", "shape": "dot", "size": 5}, {"color": "red", "id": "Dabudsht", "label": "Dabudsht(-48077)", "shape": "dot", "size": 23.410138418111153}, {"color": "green", "id": "Mahmudabad", "label": "Mahmudabad(150834)", "shape": "dot", "size": 25.89264020136795}, {"color": "green", "id": "Shirgah", "label": "Shirgah(239752)", "shape": "dot", "size": 26.898901763329523}, {"color": "red", "id": "Pol-e Sefid", "label": "Pol-e Sefid(-64687)", "shape": "dot", "size": 24.054420714498633}, {"color": "green", "id": "Garzin Kheil", "label": "Garzin Kheil(28437)", "shape": "dot", "size": 22.270182363823487}, {"color": "green", "id": "Gaduk", "label": "Gaduk(32002)", "shape": "dot", "size": 22.5265640411096}, {"color": "red", "id": "Veresk", "label": "Veresk(-23610)", "shape": "dot", "size": 21.866399466387477}, {"color": "red", "id": "Nowshahr", "label": "Nowshahr(-44283)", "shape": "dot", "size": 23.23167548195236}, {"color": "red", "id": "Chalus", "label": "Chalus(-37125)", "shape": "dot", "size": 22.848917141258084}, {"color": "green", "id": "Sisangan", "label": "Sisangan(14856)", "shape": "dot", "size": 20.860970642334653}, {"color": "green", "id": "Marzanabad", "label": "Marzanabad(84870)", "shape": "dot", "size": 24.644026854466425}, {"color": "green", "id": "Kalarabad", "label": "Kalarabad(29268)", "shape": "dot", "size": 22.332707032247676}, {"color": "red", "id": "Abbasabad", "label": "Abbasabad(-10001)", "shape": "dot", "size": 20.002387306872276}, {"color": "red", "id": "Doab", "label": "Doab(-73078)", "shape": "dot", "size": 24.31923038946858}, {"color": "red", "id": "Makarud", "label": "Makarud(-8305)", "shape": "dot", "size": 19.59931126777769}, {"color": "green", "id": "Kalardasht", "label": "Kalardasht(25458)", "shape": "dot", "size": 22.02997420595902}, {"color": "green", "id": "Nur", "label": "Nur(15076)", "shape": "dot", "size": 20.892870516899627}, {"color": "red", "id": "Panjab", "label": "Panjab(-7680)", "shape": "dot", "size": 19.429631699007153}, {"color": "red", "id": "Gazanak", "label": "Gazanak(-5502)", "shape": "dot", "size": 18.70654604449785}, {"color": "red", "id": "Polur", "label": "Polur(-1878)", "shape": "dot", "size": 16.38000994981025}, {"color": "green", "id": "Kandovan", "label": "Kandovan(233911)", "shape": "dot", "size": 26.845346059339278}, {"color": "red", "id": "Siah Bisheh", "label": "Siah Bisheh(-231953)", "shape": "dot", "size": 26.827093584425995}, {"color": "red", "id": "Hazarcham", "label": "Hazarcham(-1958)", "shape": "dot", "size": 16.470125470476614}, {"color": "green", "id": "Imamzadeh Hashem Tehran", "label": "Imamzadeh Hashem Tehran(18648)", "shape": "dot", "size": 21.354325443698894}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Siahkal", "label": "(347743)", "to": "Sangar", "width": 5.541259645380485}, {"arrows": "to", "from": "Siahkal", "label": "(53451)", "to": "Deylaman", "width": 4.727963959735886}, {"arrows": "to", "from": "Siahkal", "label": "(327024)", "to": "Lahijan", "width": 5.514580954333167}, {"arrows": "to", "from": "Sangar", "label": "(0)", "to": "Rasht", "width": 0.0}, {"arrows": "to", "from": "Sangar", "label": "(212513)", "to": "Kuchesfahan", "width": 5.327387545786185}, {"arrows": "to", "from": "Sangar", "label": "(207979)", "to": "Siahkal", "width": 5.318021573870186}, {"arrows": "to", "from": "Ziabar", "label": "(231412)", "to": "Punel", "width": 5.364387752496802}, {"arrows": "to", "from": "Ziabar", "label": "(221132)", "to": "Pirbazar", "width": 5.344653557813802}, {"arrows": "to", "from": "Ziabar", "label": "(0)", "to": "Fuman", "width": 0.0}, {"arrows": "to", "from": "Punel", "label": "(0)", "to": "Khalkhal", "width": 0.0}, {"arrows": "to", "from": "Punel", "label": "(378975)", "to": "Asalem", "width": 5.578611707599741}, {"arrows": "to", "from": "Punel", "label": "(269108)", "to": "Ziabar", "width": 5.429928222419929}, {"arrows": "to", "from": "Khalkhal", "label": "(64897)", "to": "Asalem", "width": 4.8122313130970165}, {"arrows": "to", "from": "Khalkhal", "label": "(0)", "to": "Punel", "width": 0.0}, {"arrows": "to", "from": "Anzali", "label": "(267796)", "to": "Rezvanshahr", "width": 5.427805707512646}, {"arrows": "to", "from": "Anzali", "label": "(0)", "to": "Hasanrud", "width": 0.0}, {"arrows": "to", "from": "Anzali", "label": "(733506)", "to": "Khomam", "width": 5.865404262755808}, {"arrows": "to", "from": "Rezvanshahr", "label": "(254615)", "to": "Anzali", "width": 5.40588569112195}, {"arrows": "to", "from": "Imamzadeh Hashem", "label": "Ghazvin-Rasht Rd(735119)", "to": "Saravan", "width": 5.8663582385181785}, {"arrows": "to", "from": "Imamzadeh Hashem", "label": "(879783)", "to": "Saravan", "width": 5.944376059510706}, {"arrows": "to", "from": "Imamzadeh Hashem", "label": "(0)", "to": "Shaqaji", "width": 0.0}, {"arrows": "to", "from": "Imamzadeh Hashem", "label": "Old Rd(71520)", "to": "Rostamabad", "width": 4.854433578095548}, {"arrows": "to", "from": "Imamzadeh Hashem", "label": "Rasht-Ghazvin Rd(708273)", "to": "Rostamabad", "width": 5.8502012995934205}, {"arrows": "to", "from": "Saravan", "label": "Fuman Rd(0)", "to": "Fuman", "width": 0.0}, {"arrows": "to", "from": "Saravan", "label": "(275699)", "to": "Fuman", "width": 5.4404367661057735}, {"arrows": "to", "from": "Saravan", "label": "Rasht-Ghazvin Rd(759061)", "to": "Imamzadeh Hashem", "width": 5.88027725041219}, {"arrows": "to", "from": "Saravan", "label": "(808771)", "to": "Imamzadeh Hashem", "width": 5.907826107399973}, {"arrows": "to", "from": "Saravan", "label": "(486983)", "to": "Rasht", "width": 5.687514692578371}, {"arrows": "to", "from": "Rudbar", "label": "Old Rd(99985)", "to": "Rostamabad", "width": 4.999939194516051}, {"arrows": "to", "from": "Rudbar", "label": "Ghazvin-Rasht Rd(710171)", "to": "Rostamabad", "width": 5.85136354534491}, {"arrows": "to", "from": "Rudbar", "label": "(383719)", "to": "Manjil", "width": 5.584014435797936}, {"arrows": "to", "from": "Rostamabad", "label": "Rasht-Ghazvin Rd(676255)", "to": "Rudbar", "width": 5.830111131357261}, {"arrows": "to", "from": "Rostamabad", "label": "Old Rd(105897)", "to": "Rudbar", "width": 5.024887758056816}, {"arrows": "to", "from": "Rostamabad", "label": "Old Rd(78186)", "to": "Imamzadeh Hashem", "width": 4.893134549765741}, {"arrows": "to", "from": "Rostamabad", "label": "Ghazvin-Rasht Rd(757025)", "to": "Imamzadeh Hashem", "width": 5.879110795566945}, {"arrows": "to", "from": "Kuchesfahan", "label": "(788146)", "to": "Rasht", "width": 5.8966072267977285}, {"arrows": "to", "from": "Kuchesfahan", "label": "(183427)", "to": "Sangar", "width": 5.263465630774159}, {"arrows": "to", "from": "Kuchesfahan", "label": "(498973)", "to": "Astaneh", "width": 5.698077916463649}, {"arrows": "to", "from": "Rasht", "label": "(782826)", "to": "Kuchesfahan", "width": 5.893665796225607}, {"arrows": "to", "from": "Rasht", "label": "(162710)", "to": "Lakan", "width": 5.211416914201861}, {"arrows": "to", "from": "Rasht", "label": "(835129)", "to": "Khomam", "width": 5.921754084930485}, {"arrows": "to", "from": "Rasht", "label": "(0)", "to": "Jirdeh", "width": 0.0}, {"arrows": "to", "from": "Rasht", "label": "(254414)", "to": "Saravan", "width": 5.405542713207444}, {"arrows": "to", "from": "Rasht", "label": "(639169)", "to": "Fuman", "width": 5.805616382794965}, {"arrows": "to", "from": "Rasht", "label": "(354535)", "to": "Pirbazar", "width": 5.549660340527671}, {"arrows": "to", "from": "Rasht", "label": "(0)", "to": "Sangar", "width": 0.0}, {"arrows": "to", "from": "Hasanrud", "label": "(0)", "to": "Kiashahr", "width": 0.0}, {"arrows": "to", "from": "Hasanrud", "label": "(0)", "to": "Anzali", "width": 0.0}, {"arrows": "to", "from": "Fuman", "label": "(67324)", "to": "Bazar Jomeh", "width": 4.828176362083548}, {"arrows": "to", "from": "Fuman", "label": "(14438)", "to": "Masouleh", "width": 4.159537116397021}, {"arrows": "to", "from": "Fuman", "label": "(0)", "to": "Ziabar", "width": 0.0}, {"arrows": "to", "from": "Fuman", "label": "(274999)", "to": "Saravan", "width": 5.439332693830263}, {"arrows": "to", "from": "Fuman", "label": "Fuman Rd(0)", "to": "Saravan", "width": 0.0}, {"arrows": "to", "from": "Fuman", "label": "(0)", "to": "Someh Sara", "width": 0.0}, {"arrows": "to", "from": "Bazar Jomeh", "label": "(60181)", "to": "Fuman", "width": 4.779466616347414}, {"arrows": "to", "from": "Kiashahr", "label": "(198732)", "to": "Hasanrud", "width": 5.298269988538764}, {"arrows": "to", "from": "Kiashahr", "label": "(242005)", "to": "Astaneh", "width": 5.383826133478733}, {"arrows": "to", "from": "Khomam", "label": "(12902)", "to": "Pirbazar", "width": 4.110690697273754}, {"arrows": "to", "from": "Khomam", "label": "(743199)", "to": "Anzali", "width": 5.871105700985585}, {"arrows": "to", "from": "Khomam", "label": "(817653)", "to": "Rasht", "width": 5.9125695656766375}, {"arrows": "to", "from": "Pirbazar", "label": "(236250)", "to": "Ziabar", "width": 5.373373655460932}, {"arrows": "to", "from": "Pirbazar", "label": "(323458)", "to": "Rasht", "width": 5.509819239557382}, {"arrows": "to", "from": "Pirbazar", "label": "(12375)", "to": "Khomam", "width": 4.092580300691311}, {"arrows": "to", "from": "Masouleh", "label": "(12708)", "to": "Fuman", "width": 4.104111379698969}, {"arrows": "to", "from": "Lakan", "label": "(172194)", "to": "Rasht", "width": 5.236020536757963}, {"arrows": "to", "from": "Talesh", "label": "(257898)", "to": "Astara", "width": 5.411449658170028}, {"arrows": "to", "from": "Talesh", "label": "(0)", "to": "Asalem", "width": 0.0}, {"arrows": "to", "from": "Astara", "label": "Ardabil-Astara Rd(204184)", "to": "Aq Chay", "width": 5.310023834437932}, {"arrows": "to", "from": "Astara", "label": "(268448)", "to": "Talesh", "width": 5.428861790510876}, {"arrows": "to", "from": "Shaqaji", "label": "(0)", "to": "Imamzadeh Hashem", "width": 0.0}, {"arrows": "to", "from": "Chaboksar", "label": "(475515)", "to": "Kalachay", "width": 5.67716513451172}, {"arrows": "to", "from": "Chaboksar", "label": "Gilan Exit Rd(0)", "to": "Ramsar", "width": 0.0}, {"arrows": "to", "from": "Chaboksar", "label": "(481565)", "to": "Ramsar", "width": 5.682655816842719}, {"arrows": "to", "from": "Kalachay", "label": "(640983)", "to": "Rudsar", "width": 5.806847188959636}, {"arrows": "to", "from": "Kalachay", "label": "(484236)", "to": "Chaboksar", "width": 5.685057970322385}, {"arrows": "to", "from": "Jirdeh", "label": "(0)", "to": "Rasht", "width": 0.0}, {"arrows": "to", "from": "Amlash", "label": "Shalman Rd(152557)", "to": "Rudsar", "width": 5.183434986575329}, {"arrows": "to", "from": "Amlash", "label": "(97362)", "to": "Kalan Kalaye", "width": 4.988393947138329}, {"arrows": "to", "from": "Rudsar", "label": "(663460)", "to": "Kalachay", "width": 5.821815398967448}, {"arrows": "to", "from": "Rudsar", "label": "(747312)", "to": "Langarud", "width": 5.873502537159364}, {"arrows": "to", "from": "Rudsar", "label": "Shalman Rd(172778)", "to": "Amlash", "width": 5.23749095609228}, {"arrows": "to", "from": "Astaneh", "label": "(670505)", "to": "Kuchesfahan", "width": 5.826402668474318}, {"arrows": "to", "from": "Astaneh", "label": "(979749)", "to": "Lahijan", "width": 5.99111527215014}, {"arrows": "to", "from": "Astaneh", "label": "(239370)", "to": "Kiashahr", "width": 5.379071534111896}, {"arrows": "to", "from": "Asalem", "label": "(61731)", "to": "Khalkhal", "width": 4.790510347514547}, {"arrows": "to", "from": "Asalem", "label": "(0)", "to": "Talesh", "width": 0.0}, {"arrows": "to", "from": "Asalem", "label": "(387094)", "to": "Punel", "width": 5.5878175616924155}, {"arrows": "to", "from": "Deylaman", "label": "(52376)", "to": "Siahkal", "width": 4.719140619695215}, {"arrows": "to", "from": "Lahijan", "label": "(895866)", "to": "Astaneh", "width": 5.952243539289939}, {"arrows": "to", "from": "Lahijan", "label": "(299342)", "to": "Siahkal", "width": 5.476169106821379}, {"arrows": "to", "from": "Lahijan", "label": "(971593)", "to": "Langarud", "width": 5.987484824191}, {"arrows": "to", "from": "Lowshan", "label": "Old Rd(69230)", "to": "Manjil", "width": 4.840300604778348}, {"arrows": "to", "from": "Lowshan", "label": "Old Rd(56032)", "to": "Ghazvin", "width": 4.7484438751637486}, {"arrows": "to", "from": "Lowshan", "label": "Rasht-Ghazvin Rd(680452)", "to": "Gilan Border", "width": 5.832798133146153}, {"arrows": "to", "from": "Manjil", "label": "Old Rd(67881)", "to": "Lowshan", "width": 4.831754629405333}, {"arrows": "to", "from": "Manjil", "label": "Manjil-Tarom Rd(52122)", "to": "Gilvan", "width": 4.717029404084878}, {"arrows": "to", "from": "Manjil", "label": "(525197)", "to": "Rudbar", "width": 5.720323063589152}, {"arrows": "to", "from": "Gilvan", "label": "Tarom-Manjil Rd(52372)", "to": "Manjil", "width": 4.719107451620208}, {"arrows": "to", "from": "Ramsar", "label": "Gilan Exit Rd(0)", "to": "Chaboksar", "width": 0.0}, {"arrows": "to", "from": "Ramsar", "label": "(514591)", "to": "Chaboksar", "width": 5.711463030255864}, {"arrows": "to", "from": "Ramsar", "label": "(303995)", "to": "Tonekabon", "width": 5.482867869170081}, {"arrows": "to", "from": "Langarud", "label": "(729398)", "to": "Rudsar", "width": 5.862965163564025}, {"arrows": "to", "from": "Langarud", "label": "(939061)", "to": "Lahijan", "width": 5.972694266780464}, {"arrows": "to", "from": "Ghazvin", "label": "Old Rd(0)", "to": "Lowshan", "width": 0.0}, {"arrows": "to", "from": "Ghazvin", "label": "(699558)", "to": "Lowshan", "width": 5.844824348268703}, {"arrows": "to", "from": "Someh Sara", "label": "(0)", "to": "Fuman", "width": 0.0}, {"arrows": "to", "from": "Aq Chay", "label": "Ardabil-Astara Rd(182860)", "to": "Astara", "width": 5.262121090436222}, {"arrows": "to", "from": "Kalan Kalaye", "label": "(97343)", "to": "Amlash", "width": 4.988309188036886}, {"arrows": "to", "from": "Kordkuy", "label": "(101220)", "to": "Bandar Torkaman", "width": 5.0052706235510795}, {"arrows": "to", "from": "Kordkuy", "label": "Old Rd(121837)", "to": "Gorgan", "width": 5.085782761338386}, {"arrows": "to", "from": "Kordkuy", "label": "(163866)", "to": "Galugah", "width": 5.214491502924453}, {"arrows": "to", "from": "Kordkuy", "label": "Galugah Rd(0)", "to": "Galugah", "width": 0.0}, {"arrows": "to", "from": "Bandar Torkaman", "label": "(85353)", "to": "Se-rah-e Yasaqi", "width": 4.9312238785523546}, {"arrows": "to", "from": "Bandar Torkaman", "label": "(136010)", "to": "Aq Qala", "width": 5.1335740337092926}, {"arrows": "to", "from": "Bandar Torkaman", "label": "(132956)", "to": "Gomishan", "width": 5.123711207266266}, {"arrows": "to", "from": "Bandar Torkaman", "label": "(93311)", "to": "Kordkuy", "width": 4.969937497965843}, {"arrows": "to", "from": "Gonbad", "label": "(240731)", "to": "Aq Qala", "width": 5.381533823967187}, {"arrows": "to", "from": "Gonbad", "label": "(195028)", "to": "Minudasht", "width": 5.2900991939448305}, {"arrows": "to", "from": "Gonbad", "label": "(381548)", "to": "Azadshahr", "width": 5.581550319651574}, {"arrows": "to", "from": "Gonbad", "label": "(111625)", "to": "Incheh Borun", "width": 5.047765362535229}, {"arrows": "to", "from": "Gonbad", "label": "(103069)", "to": "Se-rah-e Kalaleh", "width": 5.0131322760460035}, {"arrows": "to", "from": "Aq Qala", "label": "(245883)", "to": "Gonbad", "width": 5.3907302695366575}, {"arrows": "to", "from": "Aq Qala", "label": "(152566)", "to": "Bandar Torkaman", "width": 5.183460606569353}, {"arrows": "to", "from": "Aq Qala", "label": "(39584)", "to": "Incheh Borun", "width": 4.597530649275731}, {"arrows": "to", "from": "Aq Qala", "label": "(414279)", "to": "Gorgan", "width": 5.617293967574671}, {"arrows": "to", "from": "Minudasht", "label": "(234840)", "to": "Gonbad", "width": 5.370773921022426}, {"arrows": "to", "from": "Minudasht", "label": "(334086)", "to": "Azadshahr", "width": 5.523859576691383}, {"arrows": "to", "from": "Minudasht", "label": "(348992)", "to": "Galikesh", "width": 5.542816716094247}, {"arrows": "to", "from": "Azadshahr", "label": "\u0627\u0653\u0632\u0627\u062f\u0634\u0647\u0631 - \u0634\u0627\u0647\u0631\u0648\u062f(56667)", "to": "Khosh Yeylagh", "width": 4.753337885232085}, {"arrows": "to", "from": "Azadshahr", "label": "(374225)", "to": "Gonbad", "width": 5.57313395757411}, {"arrows": "to", "from": "Azadshahr", "label": "(289542)", "to": "Minudasht", "width": 5.461713069880267}, {"arrows": "to", "from": "Azadshahr", "label": "(510248)", "to": "Aliabad", "width": 5.707782162246692}, {"arrows": "to", "from": "Khosh Yeylagh", "label": "\u0627\u0653\u0632\u0627\u062f\u0634\u0647\u0631 - \u0634\u0627\u0647\u0631\u0648\u062f(9187)", "to": "Shahroud", "width": 3.9632209865229884}, {"arrows": "to", "from": "Khosh Yeylagh", "label": "\u0634\u0627\u0647\u0631\u0648\u062f - \u0627\u0653\u0632\u0627\u062f\u0634\u0647\u0631(54302)", "to": "Azadshahr", "width": 4.7348238230963196}, {"arrows": "to", "from": "Se-rah-e Kalaleh", "label": "(252038)", "to": "Tangrah", "width": 5.40146774782238}, {"arrows": "to", "from": "Se-rah-e Kalaleh", "label": "(0)", "to": "Kalaleh", "width": 0.0}, {"arrows": "to", "from": "Se-rah-e Kalaleh", "label": "(113365)", "to": "Gonbad", "width": 5.054482823283281}, {"arrows": "to", "from": "Tangrah", "label": "(188326)", "to": "Golestan Forest", "width": 5.27491258826101}, {"arrows": "to", "from": "Tangrah", "label": "(267332)", "to": "Se-rah-e Kalaleh", "width": 5.427052572049847}, {"arrows": "to", "from": "Gorgan", "label": "(798803)", "to": "Aliabad", "width": 5.9024402309277315}, {"arrows": "to", "from": "Gorgan", "label": "\u064fTowzin Rd(581099)", "to": "Aliabad", "width": 5.764250875438774}, {"arrows": "to", "from": "Gorgan", "label": "Tuskestan Rd(75597)", "to": "Shahroud", "width": 4.878510306077222}, {"arrows": "to", "from": "Gorgan", "label": "Old Rd(97656)", "to": "Kordkuy", "width": 4.9897033787290015}, {"arrows": "to", "from": "Gorgan", "label": "(411474)", "to": "Aq Qala", "width": 5.614343453905831}, {"arrows": "to", "from": "Galikesh", "label": "(355750)", "to": "Minudasht", "width": 5.55114612954022}, {"arrows": "to", "from": "Se-rah-e Yasaqi", "label": "(97473)", "to": "Bandar Torkaman", "width": 4.9888887883923685}, {"arrows": "to", "from": "Aliabad", "label": "(850536)", "to": "Gorgan", "width": 5.929693211007155}, {"arrows": "to", "from": "Aliabad", "label": "\u064fTowzin Rd(609288)", "to": "Gorgan", "width": 5.784823337516518}, {"arrows": "to", "from": "Aliabad", "label": "(496539)", "to": "Azadshahr", "width": 5.695954239899968}, {"arrows": "to", "from": "Galugah", "label": "(165449)", "to": "Kordkuy", "width": 5.218666771495871}, {"arrows": "to", "from": "Galugah", "label": "Galugah Rd(0)", "to": "Kordkuy", "width": 0.0}, {"arrows": "to", "from": "Galugah", "label": "(485545)", "to": "Behshahr", "width": 5.686230380690603}, {"arrows": "to", "from": "Marzpol", "label": "(11751)", "to": "Incheh Borun", "width": 4.0701117827822}, {"arrows": "to", "from": "Incheh Borun", "label": "(110470)", "to": "Gonbad", "width": 5.043248285324825}, {"arrows": "to", "from": "Incheh Borun", "label": "(11739)", "to": "Marzpol", "width": 4.069668096911595}, {"arrows": "to", "from": "Incheh Borun", "label": "(41287)", "to": "Aq Qala", "width": 4.615823846061895}, {"arrows": "to", "from": "Golestan Forest", "label": "(210545)", "to": "Tangrah", "width": 5.323346995010954}, {"arrows": "to", "from": "Shahroud", "label": "\u0634\u0627\u0647\u0631\u0648\u062f - \u0627\u0653\u0632\u0627\u062f\u0634\u0647\u0631(42500)", "to": "Khosh Yeylagh", "width": 4.628399148623785}, {"arrows": "to", "from": "Shahroud", "label": "Tuskestan Rd(80449)", "to": "Gorgan", "width": 4.905526048435048}, {"arrows": "to", "from": "Gomishan", "label": "(205529)", "to": "Bandar Torkaman", "width": 5.312875222239046}, {"arrows": "to", "from": "Kalaleh", "label": "(0)", "to": "Se-rah-e Kalaleh", "width": 0.0}, {"arrows": "to", "from": "Kalaleh", "label": "(63189)", "to": "Maraveh Tappeh", "width": 4.800648355363988}, {"arrows": "to", "from": "Maraveh Tappeh", "label": "(0)", "to": "Kalaleh", "width": 0.0}, {"arrows": "to", "from": "Kiyakala", "label": "(116249)", "to": "Babol", "width": 5.065392961561992}, {"arrows": "to", "from": "Babol", "label": "(407670)", "to": "Gatab", "width": 5.610309818668429}, {"arrows": "to", "from": "Babol", "label": "(0)", "to": "Kiyakala", "width": 0.0}, {"arrows": "to", "from": "Babol", "label": "Highway(696552)", "to": "Amol", "width": 5.842954167036832}, {"arrows": "to", "from": "Babol", "label": "Old Rd(0)", "to": "Amol", "width": 0.0}, {"arrows": "to", "from": "Babol", "label": "(870518)", "to": "Qaemshahr", "width": 5.939778254494253}, {"arrows": "to", "from": "Babol", "label": "(111611)", "to": "Fereydunkenar", "width": 5.047710890422464}, {"arrows": "to", "from": "Babol", "label": "(129224)", "to": "Babolsar", "width": 5.111346540839729}, {"arrows": "to", "from": "Shahzeyd", "label": "Rudhen-Amol Rd(311751)", "to": "Se-rah-e Sangchal", "width": 5.493809248313139}, {"arrows": "to", "from": "Shahzeyd", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(407463)", "to": "Se-rah-e Baladeh", "width": 5.610089244261278}, {"arrows": "to", "from": "Se-rah-e Sangchal", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(308812)", "to": "Shahzeyd", "width": 5.489695574401483}, {"arrows": "to", "from": "Se-rah-e Sangchal", "label": "Rudhen-Amol Rd(399505)", "to": "Park Jangali", "width": 5.6015233061714715}, {"arrows": "to", "from": "Kiasar", "label": "Amreh(0)", "to": "Sari", "width": 0.0}, {"arrows": "to", "from": "Kiasar", "label": "Kiyadeh Rd(85995)", "to": "Sari", "width": 4.9344782510304475}, {"arrows": "to", "from": "Kiasar", "label": "Kiasar-Sari Rd(95546)", "to": "Garmab", "width": 4.980217055557441}, {"arrows": "to", "from": "Kiasar", "label": "(52823)", "to": "Semnan", "width": 4.722831284264954}, {"arrows": "to", "from": "Sari", "label": "Amreh(0)", "to": "Kiasar", "width": 0.0}, {"arrows": "to", "from": "Sari", "label": "Kiyadeh Rd(79728)", "to": "Kiasar", "width": 4.90161631699433}, {"arrows": "to", "from": "Sari", "label": "(269512)", "to": "Juybar", "width": 5.430579718287503}, {"arrows": "to", "from": "Sari", "label": "(779758)", "to": "Neka", "width": 5.891960396097062}, {"arrows": "to", "from": "Sari", "label": "(631417)", "to": "Khazarabad", "width": 5.80031695828038}, {"arrows": "to", "from": "Sari", "label": "Sari-Kiasar Rd(240163)", "to": "Shakta", "width": 5.380507908258044}, {"arrows": "to", "from": "Sari", "label": "(1028368)", "to": "Qaemshahr", "width": 6.012148976438483}, {"arrows": "to", "from": "Babolsar", "label": "(288315)", "to": "Behnamir", "width": 5.459868744084006}, {"arrows": "to", "from": "Babolsar", "label": "(814332)", "to": "Fereydunkenar", "width": 5.910802034482767}, {"arrows": "to", "from": "Babolsar", "label": "(767005)", "to": "Babol", "width": 5.884798761284965}, {"arrows": "to", "from": "Behnamir", "label": "(264124)", "to": "Babolsar", "width": 5.42180951006037}, {"arrows": "to", "from": "Behshahr", "label": "Rostamkala Rd(0)", "to": "Amirabad Port", "width": 0.0}, {"arrows": "to", "from": "Behshahr", "label": "(454286)", "to": "Galugah", "width": 5.657330309103763}, {"arrows": "to", "from": "Behshahr", "label": "(605279)", "to": "Neka", "width": 5.781956323948669}, {"arrows": "to", "from": "Amirabad Port", "label": "Rostamkala Rd(0)", "to": "Behshahr", "width": 0.0}, {"arrows": "to", "from": "Neka", "label": "(610935)", "to": "Behshahr", "width": 5.785995717112199}, {"arrows": "to", "from": "Neka", "label": "Hosseinabad(0)", "to": "Zagheh Marz", "width": 0.0}, {"arrows": "to", "from": "Neka", "label": "(771871)", "to": "Sari", "width": 5.887545286990315}, {"arrows": "to", "from": "Dabudsht", "label": "(146724)", "to": "Fereydunkenar", "width": 5.166504118185611}, {"arrows": "to", "from": "Fereydunkenar", "label": "(699539)", "to": "Babolsar", "width": 5.844812552684321}, {"arrows": "to", "from": "Fereydunkenar", "label": "(98647)", "to": "Dabudsht", "width": 4.994088284745142}, {"arrows": "to", "from": "Fereydunkenar", "label": "(500099)", "to": "Mahmudabad", "width": 5.699056854547668}, {"arrows": "to", "from": "Fereydunkenar", "label": "(30400)", "to": "Babol", "width": 4.482887869376486}, {"arrows": "to", "from": "Amol", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(503635)", "to": "Park Jangali", "width": 5.702116766000069}, {"arrows": "to", "from": "Amol", "label": "Old Rd(0)", "to": "Babol", "width": 0.0}, {"arrows": "to", "from": "Amol", "label": "Highway(867009)", "to": "Babol", "width": 5.938024106610897}, {"arrows": "to", "from": "Amol", "label": "\u0627\u0653\u0645\u0644 - \u0628\u0627\u0628\u0644(0)", "to": "Qaemshahr", "width": 0.0}, {"arrows": "to", "from": "Amol", "label": "(922847)", "to": "Mahmudabad", "width": 5.965130175351644}, {"arrows": "to", "from": "Park Jangali", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(374267)", "to": "Se-rah-e Sangchal", "width": 5.5731826964237445}, {"arrows": "to", "from": "Park Jangali", "label": "Rudhen-Amol Rd(479123)", "to": "Amol", "width": 5.680447925828941}, {"arrows": "to", "from": "Gatab", "label": "(408601)", "to": "Babol", "width": 5.611300488059616}, {"arrows": "to", "from": "Shirgah", "label": "Qaemshahr-Firuzkuh Rd(471901)", "to": "Pol-e Sefid", "width": 5.673851817959866}, {"arrows": "to", "from": "Shirgah", "label": "Firuzkuh-Qaemshahr Rd(329060)", "to": "Qaemshahr", "width": 5.517276413171122}, {"arrows": "to", "from": "Pol-e Sefid", "label": "Qaemshahr-Firuzkuh Rd(378544)", "to": "Garzin Kheil", "width": 5.57811751419283}, {"arrows": "to", "from": "Pol-e Sefid", "label": "Firuzkuh-Qaemshahr Rd(499759)", "to": "Shirgah", "width": 5.698761492937965}, {"arrows": "to", "from": "Gaduk", "label": "Firuzkuh-Qaemshahr Rd(334389)", "to": "Veresk", "width": 5.524253281297611}, {"arrows": "to", "from": "Veresk", "label": "Firuzkuh-Qaemshahr Rd(351851)", "to": "Garzin Kheil", "width": 5.5463600239906565}, {"arrows": "to", "from": "Veresk", "label": "Firuzkuh-Qaemshahr Rd(366391)", "to": "Gaduk", "width": 5.563945982480023}, {"arrows": "to", "from": "Nowshahr", "label": "(694905)", "to": "Chalus", "width": 5.841926061507688}, {"arrows": "to", "from": "Nowshahr", "label": "Nowshahr-Nur Rd(627955)", "to": "Sisangan", "width": 5.797929214395386}, {"arrows": "to", "from": "Chalus", "label": "Tehran-North Rd(360260)", "to": "Marzanabad", "width": 5.556617250183785}, {"arrows": "to", "from": "Chalus", "label": "(704328)", "to": "Kalarabad", "width": 5.847775570375418}, {"arrows": "to", "from": "Chalus", "label": "(674212)", "to": "Nowshahr", "width": 5.828797122219117}, {"arrows": "to", "from": "Chalus", "label": "(713823)", "to": "Abbasabad", "width": 5.853591145598267}, {"arrows": "to", "from": "Chalus", "label": "Chalus-Karaj Rd(116108)", "to": "Doab", "width": 5.064865884672655}, {"arrows": "to", "from": "Doab", "label": "Chalus-Karaj Rd(379955)", "to": "Marzanabad", "width": 5.579733306975765}, {"arrows": "to", "from": "Doab", "label": "Karaj-Chalus Rd(106789)", "to": "Chalus", "width": 5.028530586511328}, {"arrows": "to", "from": "Marzanabad", "label": "Tehran-North Rd(366092)", "to": "Chalus", "width": 5.563591424892355}, {"arrows": "to", "from": "Marzanabad", "label": "Chalus-Karaj Rd(337251)", "to": "Makarud", "width": 5.527954533841016}, {"arrows": "to", "from": "Marzanabad", "label": "Karaj-Chalus Rd(297558)", "to": "Doab", "width": 5.473573090514864}, {"arrows": "to", "from": "Kalardasht", "label": "(55473)", "to": "Abbasabad", "width": 4.744089482181265}, {"arrows": "to", "from": "Abbasabad", "label": "(688760)", "to": "Chalus", "width": 5.838068547905072}, {"arrows": "to", "from": "Abbasabad", "label": "(80931)", "to": "Kalardasht", "width": 4.908120272855562}, {"arrows": "to", "from": "Abbasabad", "label": "(610332)", "to": "Tonekabon", "width": 5.785566852392192}, {"arrows": "to", "from": "Sisangan", "label": "Nowshahr-Nur Rd(477662)", "to": "Nur", "width": 5.679121601931948}, {"arrows": "to", "from": "Sisangan", "label": "Nur-Nowshahr Rd(604365)", "to": "Nowshahr", "width": 5.781300024118799}, {"arrows": "to", "from": "Panjab", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(358985)", "to": "Gazanak", "width": 5.555077511973017}, {"arrows": "to", "from": "Panjab", "label": "Rudhen-Amol Rd(353731)", "to": "Se-rah-e Baladeh", "width": 5.548674349593643}, {"arrows": "to", "from": "Gazanak", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(358821)", "to": "Polur", "width": 5.554879062537314}, {"arrows": "to", "from": "Gazanak", "label": "Rudhen-Amol Rd(347717)", "to": "Panjab", "width": 5.5412271729908085}, {"arrows": "to", "from": "Juybar", "label": "(0)", "to": "Qaemshahr", "width": 0.0}, {"arrows": "to", "from": "Juybar", "label": "(279276)", "to": "Sari", "width": 5.446035170629799}, {"arrows": "to", "from": "Qaemshahr", "label": "(725392)", "to": "Babol", "width": 5.860573360348301}, {"arrows": "to", "from": "Qaemshahr", "label": "Qaemshahr-Firuzkuh Rd(540954)", "to": "Shirgah", "width": 5.7331611392941335}, {"arrows": "to", "from": "Qaemshahr", "label": "\u0627\u0653\u0645\u0644 - \u0628\u0627\u0628\u0644(0)", "to": "Amol", "width": 0.0}, {"arrows": "to", "from": "Qaemshahr", "label": "(888399)", "to": "Sari", "width": 5.948608549876436}, {"arrows": "to", "from": "Qaemshahr", "label": "(0)", "to": "Juybar", "width": 0.0}, {"arrows": "to", "from": "Kandovan", "label": "Karaj-Chalus Rd(51210)", "to": "Siah Bisheh", "width": 4.709363256409316}, {"arrows": "to", "from": "Siah Bisheh", "label": "Chalus-Karaj Rd(285121)", "to": "Kandovan", "width": 5.455030728743977}, {"arrows": "to", "from": "Siah Bisheh", "label": "Karaj-Chalus Rd(325853)", "to": "Hazarcham", "width": 5.513023056518561}, {"arrows": "to", "from": "Nur", "label": "(723718)", "to": "Mahmudabad", "width": 5.859569974431829}, {"arrows": "to", "from": "Nur", "label": "Nur-Nowshahr Rd(468928)", "to": "Sisangan", "width": 5.671107091665112}, {"arrows": "to", "from": "Mahmudabad", "label": "(470365)", "to": "Fereydunkenar", "width": 5.6724359216011475}, {"arrows": "to", "from": "Mahmudabad", "label": "(730060)", "to": "Nur", "width": 5.863359148965116}, {"arrows": "to", "from": "Mahmudabad", "label": "(795405)", "to": "Amol", "width": 5.900588862683484}, {"arrows": "to", "from": "Garzin Kheil", "label": "Firuzkuh-Qaemshahr Rd(341715)", "to": "Pol-e Sefid", "width": 5.53366531403151}, {"arrows": "to", "from": "Garzin Kheil", "label": "Qaemshahr-Firuzkuh Rd(360243)", "to": "Veresk", "width": 5.556596756207495}, {"arrows": "to", "from": "Tonekabon", "label": "(662696)", "to": "Ramsar", "width": 5.821315004563642}, {"arrows": "to", "from": "Tonekabon", "label": "(600726)", "to": "Abbasabad", "width": 5.778677151986464}, {"arrows": "to", "from": "Makarud", "label": "Karaj-Chalus Rd(345556)", "to": "Marzanabad", "width": 5.538519694962582}, {"arrows": "to", "from": "Makarud", "label": "Chalus-Karaj Rd(0)", "to": "Hazarcham", "width": 0.0}, {"arrows": "to", "from": "Semnan", "label": "(66117)", "to": "Kiasar", "width": 4.820319708146527}, {"arrows": "to", "from": "Zagheh Marz", "label": "Hosseinabad(0)", "to": "Neka", "width": 0.0}, {"arrows": "to", "from": "Polur", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(366438)", "to": "Imamzadeh Hashem Tehran", "width": 5.564001689295584}, {"arrows": "to", "from": "Polur", "label": "Rudhen-Amol Rd(342051)", "to": "Gazanak", "width": 5.5340921341157046}, {"arrows": "to", "from": "Imamzadeh Hashem Tehran", "label": "Rudhen-Amol Rd(347790)", "to": "Polur", "width": 5.541318339308701}, {"arrows": "to", "from": "Se-rah-e Baladeh", "label": "Rudhen-Amol Rd(370830)", "to": "Shahzeyd", "width": 5.569176032285273}, {"arrows": "to", "from": "Se-rah-e Baladeh", "label": "\u0627\u0653\u0645\u0644 - \u0631\u0648\u062f\u0647\u0646(357319)", "to": "Panjab", "width": 5.553057325316767}, {"arrows": "to", "from": "Hazarcham", "label": "Karaj-Chalus Rd(0)", "to": "Makarud", "width": 0.0}, {"arrows": "to", "from": "Hazarcham", "label": "Chalus-Karaj Rd(327811)", "to": "Siah Bisheh", "width": 5.515624847460209}, {"arrows": "to", "from": "Kalarabad", "label": "(675060)", "to": "Chalus", "width": 5.8293430184109125}, {"arrows": "to", "from": "Khazarabad", "label": "(590445)", "to": "Sari", "width": 5.77118018480406}, {"arrows": "to", "from": "Garmab", "label": "Sari-Kiasar Rd(89559)", "to": "Kiasar", "width": 4.9521140849069925}, {"arrows": "to", "from": "Shakta", "label": "Kiasar-Sari Rd(282179)", "to": "Sari", "width": 5.450526229129723}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 1,
+            "centralGravity": 0.003,
+            "damping": 0.9,
+            "gravitationalConstant": -25,
+            "springConstant": 0.08,
+            "springLength": 150
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

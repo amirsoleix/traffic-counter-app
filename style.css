@@ -14,3 +14,7 @@ html, body, [class*="css"], * {
     direction: ltr !important;
     text-align: center !important;
 }
+
+img {
+    border-radius: 2rem !important;
+}
