@@ -289,7 +289,7 @@ def graph_formation(start_date, end_date):
     classes = [1, 2]
 
     for province in provinces:
-        files = os.listdir(f'./graph-data/{province}')
+        files = os.listdir(f'https://github.com/amirsoleix/traffic-counter-app/tree/master/graph-data/{province}')
         for file in files:
             name = re.sub(r'.csv', '', file)
 
@@ -314,7 +314,7 @@ def graph_formation(start_date, end_date):
             else:
                 print(f"Ending node {ending_node} not found in city_translation.")
 
-            df = pd.read_csv(f'./graph-data/{province}/{file}')
+            df = pd.read_csv(f'https://github.com/amirsoleix/traffic-counter-app/tree/master/graph-data/{province}/{file}')
 
             df['Start Date'] = df['Start Time'].apply(lambda x: JalaliDate(
             int(x.split(' ')[0].split('/')[0]),
