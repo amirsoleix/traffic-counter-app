@@ -455,9 +455,9 @@ second_kmeans.columns = ["city", "1401 cluster"]
 third_kmeans.columns = ["city", "1402 cluster"]
 kmeans_clusters = first_kmeans.merge(second_kmeans, on="city", how="inner").merge(third_kmeans, on="city", how="inner")
 # Keep only cities that are in the same cluster for all three years
-kmeans_clusters = kmeans_clusters[kmeans_clusters["1400 cluster"] == kmeans_clusters["1401 cluster"]]
-kmeans_clusters = kmeans_clusters[kmeans_clusters["1401 cluster"] == kmeans_clusters["1402 cluster"]]
+kmeans_clusters = kmeans_clusters[((kmeans_clusters["1400 cluster"] == 1) & (kmeans_clusters["1401 cluster"] == 2) & (kmeans_clusters["1402 cluster"] == 2)) | ((kmeans_clusters["1400 cluster"] == 2) & (kmeans_clusters["1401 cluster"] == 1) & (kmeans_clusters["1402 cluster"] == 1))]
 kmeans_clusters = kmeans_clusters[kmeans_clusters["1401 cluster"] != 0]
+kmeans_clusters = kmeans_clusters[kmeans_clusters["1402 cluster"] != 0]
 # Drop 1400 cluster and 1401 cluster
 kmeans_clusters.drop(columns=["1400 cluster", "1401 cluster"], inplace=True)
 kmeans_clusters.columns = ["City", "Tourist", "Tourist Per Capita", "City Type"]
