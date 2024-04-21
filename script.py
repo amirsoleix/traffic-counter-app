@@ -569,7 +569,7 @@ script_path = os.path.dirname(script_path)
 if not os.path.exists(os.path.join(os.path.dirname(script_path), 'graph-data')):
     os.makedirs(os.path.join(os.path.dirname(script_path), 'graph-data'))
     # Unzip the graph-data.zip file
-    with zipfile.ZipFile("graph-data.zip", 'r') as zip_ref:
+    with zipfile.ZipFile("https://github.com/amirsoleix/traffic-counter-app/blob/master/data/graph-data.zip", 'r') as zip_ref:
         zip_ref.extractall(os.path.join(os.path.dirname(script_path), 'graph-data'))
 st.write("""
 گراف محورهای تردد که با افزایش ابعاد می‌توانید میزان تردد در هر یک را مشاهده کنید.
